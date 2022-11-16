@@ -6,7 +6,7 @@ CREATE TABLE order_items (
     order_id INT NOT NULL,
     product_id INT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT order_items_order_items_status_id_fkey FOREIGN KEY (order_items_status_id) REFERENCES order_item_status(id),
     CONSTRAINT order_items_order_id_fkey FOREIGN KEY (order_id) REFERENCES orders(id),
     CONSTRAINT order_items_product_id_fkey FOREIGN KEY (product_id) REFERENCES products(id),
