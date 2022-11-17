@@ -23,6 +23,13 @@ const signUp = async(name,email,password,gender,address) => {
         throw err;
       }
 
+      const user = await userDao.getUserByEmail(email);
+
+      if(user){
+          const err = new Error('DUPLICATE_EAMIL');
+          err.statusCode = 400;
+          throw err;
+      }
     
     const genderCheck = () => {
       if(gender === '남자'){
