@@ -8,7 +8,7 @@ const signUp = async (req,res) => {
             return res.status(400).json({message: 'KEY_ERROR'});
         }
 
-        if(gender !=='남자' || gender !== '여자'){
+        if(gender !=='남자' && gender !== '여자'){
             return res.status(400).json({message: 'KEY_ERROR'});
         }
 
