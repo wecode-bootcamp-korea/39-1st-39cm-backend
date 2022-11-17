@@ -22,6 +22,7 @@ const signUp = async(name,email,password,gender,address) => {
         err.statusCode = 409;
         throw err;
       }
+
     
     const genderCheck = () => {
       if(gender === '남자'){

@@ -17,7 +17,7 @@ const signUp = async (req,res) => {
             message : 'SIGNUP_SUCCESS'
         })
     } catch(err){
-        return res.status(err.satusCode || 500).json({message : err.message});
+        return res.status(err.statusCode || 500).json({message : err.message});
     }
 };
 

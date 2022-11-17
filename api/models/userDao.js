@@ -1,4 +1,4 @@
-const {AppDataSource} = require('../models/data_source')
+const {AppDataSource} = require('./data_source')
 
 const createUser = async(name,email,password,gender,address) =>{
     try {
@@ -14,12 +14,14 @@ const createUser = async(name,email,password,gender,address) =>{
             [name,email,password,gender,address]
         ); 
     } catch(err) {
-        console.log(err)
-        const error = new Error('INVALID_DATA_INPUT');
-        error.statusCode = 500;
-        throw error;
-    }
-};
+        if(err.sqlMessage.includes('Duplicate')){
+            throw new Error('DUPLICATE_EAMIL');
+        } else {
+            throw new Error('DATABASE ERROR')
+        }
+        }
+}
+
 
 module.exports = {
     createUser
