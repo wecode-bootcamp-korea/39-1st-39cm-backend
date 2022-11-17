@@ -1,12 +1,10 @@
 const { productService } = require('../services');
-
+const { CustomError } = require('../utils/error');
 const getProductByProductId = async (req, res) => {
     try {
         const { productId } = req.params;
         if (isNaN(productId)) {
-            const err = new Error('BAD_REQUEST');
-            err.statusCode = 400;
-            throw err;
+            throw new CustomError('BAD_REQUEST', 400);
         }
         const product = await productService.getProductByProductId(productId);
         res.status(200).json({ product: product });
@@ -17,6 +15,19 @@ const getProductByProductId = async (req, res) => {
 
 const getProducts = async (req, res) => {
     try {
+        for (let i in req.query) {
+            if (["'", `"`, `,`, `.`].some((e) => req.query[i].includes(e))) throw new CustomError('BAD_REQUEST', 400);
+        }
+        if (
+            isNaN(req.query.limit) ||
+            isNaN(req.query.offset) ||
+            isNaN(req.query.min_price) ||
+            isNaN(req.query.max_price) ||
+            isNaN(req.query.category) ||
+            isNaN(req.query.product_gender)
+        ) {
+            throw new CustomError('BAD_REQUEST', 400);
+        }
         const products = await productService.getProducts(
             req.query.limit,
             req.query.offset,

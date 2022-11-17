@@ -18,14 +18,13 @@ const buildWhereClause = (minPrice, maxPrice, color, category, brand, productGen
             },
         };
     }
-
     let clause = `WHERE `;
     if (minPrice) clause += `p.price > ${minPrice} AND `;
     if (maxPrice) clause += `p.price < ${maxPrice} AND `;
-    if (color) clause += `p.color = ${color} AND `;
-    if (category) clause += `c.name = ${category} AND `;
-    if (brand) clause += `p.brand_name = ${brand} AND `;
-    if (productGender) clause += `p.product_gender = ${productGender} AND `;
+    if (color) clause += `p.color = '${color}' AND `;
+    if (category) clause += `p.category_id = ${category} AND `;
+    if (brand) clause += `p.brand_name = '${brand}' AND `;
+    if (productGender) clause += `p.product_gender_id = ${productGender} AND `;
     clause = clause.slice(0, clause.length - 4);
     return {
         toSqlString: function () {

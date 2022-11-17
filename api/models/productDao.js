@@ -6,9 +6,17 @@ const getProductByProductId = async (productId) => {
             p.name productName,
             p.description description,
             p.price price,
-            JSON_ARRAYAGG(pi.image_url) images,
             c.name category,
             COUNT(l.product_id) AS totalLikes,
+            (
+                SELECT
+                    JSON_ARRAYAGG(
+                        pi.image_url
+                    ) images
+                    FROM product_images pi
+                    WHERE pi.product_id = ?
+                    GROUP BY pi.product_id
+            ) images,
             (
                 SELECT 
                     JSON_ARRAYAGG(
@@ -25,23 +33,22 @@ const getProductByProductId = async (productId) => {
                 JOIN users u ON u.id = r.user_id
                 WHERE p.id = ?
                 GROUP BY p.id
-            ) as reviews
+            ) reviews
         FROM products p
-        LEFT JOIN product_images pi ON p.id = pi.product_id
         LEFT JOIN categories c ON c.id = p.category_id
         LEFT JOIN likes l ON p.id=l.product_id
         WHERE p.id = ?	
         GROUP BY p.id
         `,
-        [productId, productId]
+        [productId, productId, productId]
     );
-    console.log('product' + row);
     return row;
 };
 
 const getProducts = async (whereClause, orderClause, limitClause) => {
     const rows = await AppDataSource.query(
         `SELECT
+            p.id productId,
             p.name productName,
             p.brand_name brandName,
             p.price price,
@@ -78,7 +85,6 @@ const getProducts = async (whereClause, orderClause, limitClause) => {
         `,
         [whereClause, orderClause, limitClause]
     );
-    console.log(rows);
     return rows;
 };
 
