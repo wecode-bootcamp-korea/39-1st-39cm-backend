@@ -12,6 +12,18 @@ const getUserByEmail = async (email) => {
     return result[0];
 };
 
+const getUserById = async (id) => {
+    const result = await AppDataSource.query(
+        `
+		SELECT 
+           *
+		FROM users
+		WHERE id = ?`,
+        [id]
+    );
+    return result[0];
+};
+
 const createUser = async (name, email, password, gender, address) => {
     await AppDataSource.query(
         `INSERT INTO users(
@@ -29,4 +41,5 @@ const createUser = async (name, email, password, gender, address) => {
 module.exports = {
     createUser,
     getUserByEmail,
+    getUserById,
 };
