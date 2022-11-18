@@ -18,17 +18,17 @@ const buildWhereClause = (minPrice, maxPrice, color, category, brand, productGen
             },
         };
     }
-    let clause = `WHERE `;
-    if (minPrice) clause += `p.price > ${minPrice} AND `;
-    if (maxPrice) clause += `p.price < ${maxPrice} AND `;
-    if (color) clause += `p.color = '${color}' AND `;
-    if (category) clause += `p.category_id = ${category} AND `;
-    if (brand) clause += `p.brand_name = '${brand}' AND `;
-    if (productGender) clause += `p.product_gender_id = ${productGender} AND `;
-    clause = clause.slice(0, clause.length - 4);
+    const clause = [];
+    if (minPrice) clause.push(`p.price > ${minPrice}`);
+    if (maxPrice) clause.push(`p.price < ${maxPrice}`);
+    if (color) clause.push(`p.color = '${color}'`);
+    if (category) clause.push(`p.category_id = ${category}`);
+    if (brand) clause.push(`p.brand_name = '${brand}'`);
+    if (productGender) clause.push(`p.product_gender_id = ${productGender}`);
+    const whereClauses = `WHERE ${clause.join(` AND `)}`;
     return {
         toSqlString: function () {
-            return clause;
+            return whereClauses;
         },
     };
 };
@@ -63,24 +63,11 @@ const buildOrderClause = (sort) => {
     }
 };
 const buildLimitAndOffset = (limit, offset) => {
-    if (!limit) {
-        return {
-            toSqlString: function () {
-                return ``;
-            },
-        };
-    }
-    if (!offset) {
-        return {
-            toSqlString: function () {
-                return `LIMIT ${limit} `;
-            },
-        };
-    }
-
+    if (!limit) limit = 10;
+    if (!offset) offset = 0;
     return {
         toSqlString: function () {
-            return `LIMIT ${limit} OFFSET ${offset} `;
+            return ` LIMIT ${limit} OFFSET ${offset} `;
         },
     };
 };
