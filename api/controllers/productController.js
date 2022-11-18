@@ -7,7 +7,7 @@ const getProductByProductId = async (req, res) => {
             throw new CustomError('BAD_REQUEST', 400);
         }
         const product = await productService.getProductByProductId(productId);
-        res.status(200).json({ product: product });
+        res.status(200).json({ product });
     } catch (err) {
         res.status(err.statusCode || 500).json({ message: err.message });
     }
@@ -15,31 +15,32 @@ const getProductByProductId = async (req, res) => {
 
 const getProducts = async (req, res) => {
     try {
+        const { limit, offset, sort, min_price, max_price, color, category, brand, product_gender } = req.query;
         for (let i in req.query) {
             if (["'", `"`, `,`, `.`].some((e) => req.query[i].includes(e))) throw new CustomError('BAD_REQUEST', 400);
         }
         if (
-            isNaN(req.query.limit) ||
-            isNaN(req.query.offset) ||
-            isNaN(req.query.min_price) ||
-            isNaN(req.query.max_price) ||
-            isNaN(req.query.category) ||
-            isNaN(req.query.product_gender)
+            isNaN(limit) ||
+            isNaN(offset) ||
+            isNaN(min_price) ||
+            isNaN(max_price) ||
+            isNaN(category) ||
+            isNaN(product_gender)
         ) {
             throw new CustomError('BAD_REQUEST', 400);
         }
         const products = await productService.getProducts(
-            req.query.limit,
-            req.query.offset,
-            req.query.sort,
-            req.query.min_price,
-            req.query.max_price,
-            req.query.color,
-            req.query.category,
-            req.query.brand,
-            req.query.product_gender
+            limit,
+            offset,
+            sort,
+            min_price,
+            max_price,
+            color,
+            category,
+            brand,
+            product_gender
         );
-        res.status(200).json({ products: products });
+        res.status(200).json({ products });
     } catch (err) {
         res.status(err.statusCode || 500).json({ message: err.message });
     }
