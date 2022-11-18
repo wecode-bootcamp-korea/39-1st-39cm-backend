@@ -26,9 +26,7 @@ const start = async () => {
     try {
         await AppDataSource.initialize();
 
-        server.listen(PORT, () =>
-            console.log(`Server is listening on ${PORT}`)
-        );
+        server.listen(PORT, () => console.log(`Server is listening on ${PORT}`));
     } catch (err) {
         console.error(err);
     }
