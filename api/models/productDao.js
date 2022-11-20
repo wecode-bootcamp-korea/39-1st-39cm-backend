@@ -88,4 +88,16 @@ const getProducts = async (whereClause, orderClause, limitClause) => {
     return rows;
 };
 
-module.exports = { getProductByProductId, getProducts };
+const CheckIfProductExists = async (productId) => {
+    const row = await AppDataSource.query(
+        `SELECT
+            name productName
+        FROM products
+        WHERE id = ?
+        `,
+        [productId]
+    );
+    return row;
+};
+
+module.exports = { getProductByProductId, getProducts, CheckIfProductExists };
