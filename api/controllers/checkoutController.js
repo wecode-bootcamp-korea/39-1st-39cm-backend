@@ -8,6 +8,7 @@ const orderItemsByUserId = async (req, res) => {
         const totalPrice = await checkoutService.orderItemsByUserId(userId);
         return res.status(200).json({ totalPrice });
     } catch (err) {
+        console.log(err);
         res.status(err.statusCode || 500).json({ message: err.message });
     }
 };

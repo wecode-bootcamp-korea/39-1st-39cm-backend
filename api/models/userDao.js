@@ -6,7 +6,8 @@ const getUserByEmail = async (email) => {
 		SELECT 
            *
 		FROM users
-		WHERE email = ?`,
+		WHERE email = ?
+        `,
         [email]
     );
     return result[0];
@@ -26,7 +27,32 @@ const createUser = async (name, email, password, gender, address) => {
     );
 };
 
+const getPointByUserId = async (userId) => {
+    const point = await AppDataSource.query(
+        `SELECT
+            point
+        FROM users
+        WHERE id = ?
+        `,
+        [userId]
+    );
+    return point[0];
+};
+
+const updatePointByUserId = async (point, userId) => {
+    await AppDataSource.query(
+        `
+        UPDATE users
+        SET point = ?
+        WHERE id = ?
+        `,
+        [point, userId]
+    );
+};
+
 module.exports = {
     createUser,
     getUserByEmail,
+    getPointByUserId,
+    updatePointByUserId,
 };
