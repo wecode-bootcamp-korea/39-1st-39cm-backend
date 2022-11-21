@@ -22,8 +22,8 @@ const deleteBasketsByBasketId = async (userId, basketIds) => {
     });
 };
 
-const checkIfBasketExists = async (basketId) => {
-    if (!(await cartDao.checkIfBasketExists(basketId))[0]) throw new CustomError('BASKET_DOES_NOT_EXIST', 404);
+const checkIfBasketExists = async (basketId, userId) => {
+    if (!(await cartDao.checkIfBasketExists(basketId, userId))[0]) throw new CustomError('BASKET_DOES_NOT_EXIST', 404);
 };
 
 const deleteBasketsQueryBuilder = (basketIds) => {

@@ -1,4 +1,4 @@
-const { cartDao, orderDao, userDao, productDao } = require('../models');
+const { orderDao, userDao, productDao } = require('../models');
 const { CustomError } = require('../utils/error');
 
 const orderItems = async (userId, orders) => {

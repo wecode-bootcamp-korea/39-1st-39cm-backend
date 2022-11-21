@@ -93,14 +93,14 @@ const getPriceOfBasketByBasketId = async (basketId, userId) => {
     );
 };
 
-const checkIfBasketExists = async (basketId) => {
+const checkIfBasketExists = async (basketId, userId) => {
     const row = await AppDataSource.query(
         `SELECT
             id
         FROM baskets
-        WHERE id = ?
+        WHERE id = ? AND user_id = ?
         `,
-        [basketId]
+        [basketId, userId]
     );
     return row;
 };

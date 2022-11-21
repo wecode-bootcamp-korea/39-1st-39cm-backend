@@ -3,9 +3,7 @@ const { CustomError } = require('../utils/error');
 
 const orderItems = async (req, res) => {
     try {
-        //const userId = req.user;
-        //머지되면 위에걸로 바꾸셈
-        const { userId } = req.body;
+        const userId = req.user;
         const { orders } = req.body;
         if (!Array.isArray(orders) || orders.length === 0) throw new CustomError('BAD_REQUEST', 400);
         if (
