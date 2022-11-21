@@ -81,6 +81,18 @@ const updateBasket = async (basketId, userId, amount) => {
     );
 };
 
+const getPriceOfBasketByBasketId = async (basketId, userId) => {
+    await AppDataSource.query(
+        `SELECT
+            (b.amount * p.price) totalPrice
+        FROM baskets b
+        JOIN products p ON b.product_id = p.id
+        WHERE b.id = ? AND b.user_id = ?
+        `,
+        [basketId, userId]
+    );
+};
+
 module.exports = {
     addBasket,
     deleteAllBasketsByUserId,
@@ -88,4 +100,5 @@ module.exports = {
     getBasketsByUserId,
     updateBasket,
     getBasketByUserIdAndProductId,
+    getPriceOfBasketByBasketId,
 };
