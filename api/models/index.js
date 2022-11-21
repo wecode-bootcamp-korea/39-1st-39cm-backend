@@ -1,9 +1,9 @@
-const data_source = require('./data_source');
+const productDao = require('./productDao');
 const userDao = require('./userDao');
 const likeDao = require('./likeDao');
 
 module.exports = {
-    data_source,
+    productDao,
     userDao,
     likeDao,
 };

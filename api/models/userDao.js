@@ -2,8 +2,7 @@ const { AppDataSource } = require('./data_source');
 
 const getUserByEmail = async (email) => {
     const result = await AppDataSource.query(
-        `
-		SELECT 
+        `SELECT 
            *
 		FROM users
 		WHERE email = ?`,
