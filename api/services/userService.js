@@ -28,7 +28,7 @@ const signUp = async (name, email, password, gender, address) => {
     const user = await userDao.getUserByEmail(email);
 
     if (user) {
-        const err = new Error('DUPLICATE_EAMIL');
+        const err = new Error('DUPLICATE_EMAIL');
         err.statusCode = 400;
         throw err;
     }

@@ -23,7 +23,7 @@ const loginRequired = async (req, res, next) => {
         return res.status(error.statusCode).json({ message: error.message });
     }
 
-    req.user = user;
+    req.user = user.id;
     next();
 };
 
