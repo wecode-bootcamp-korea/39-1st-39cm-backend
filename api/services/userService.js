@@ -1,5 +1,11 @@
 const { userDao } = require('../models');
+
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+const getUserById = async (id) => {
+    return await userDao.getUserById(id);
+};
 
 const signUp = async (name, email, password, gender, address) => {
     const emailValidation = new RegExp(
@@ -22,7 +28,7 @@ const signUp = async (name, email, password, gender, address) => {
     const user = await userDao.getUserByEmail(email);
 
     if (user) {
-        const err = new Error('DUPLICATE_EAMIL');
+        const err = new Error('DUPLICATE_EMAIL');
         err.statusCode = 400;
         throw err;
     }
@@ -39,6 +45,24 @@ const signUp = async (name, email, password, gender, address) => {
     return createUser;
 };
 
+const signIn = async (email, password) => {
+    const user = await userDao.getUserByEmail(email);
+
+    const match = await bcrypt.compare(password, user.password);
+
+    if (!match) {
+        const error = new Error('WRONG_PASSWORD');
+        error.statusCode = 401;
+        throw error;
+    }
+
+    const token = jwt.sign({ id: user.id }, process.env.secretKey);
+
+    return token;
+};
+
 module.exports = {
     signUp,
+    signIn,
+    getUserById,
 };
