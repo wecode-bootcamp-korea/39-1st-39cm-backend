@@ -4,7 +4,7 @@ const { checkoutController } = require('../controllers');
 
 const checkoutRouter = express.Router();
 
-//checkoutRouter.get('', loginrequired, checkoutController.orderItemsByUserId );
-checkoutRouter.post('', checkoutController.orderItemsByUserId);
+//checkoutRouter.post('', loginrequired, checkoutController.orderItemsByUserId );
+checkoutRouter.post('', checkoutController.orderItems);
 
 module.exports = { checkoutRouter };

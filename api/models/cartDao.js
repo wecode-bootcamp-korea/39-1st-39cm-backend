@@ -22,13 +22,13 @@ const deleteAllBasketsByUserId = async (userId) => {
     );
 };
 
-const deleteBasketByBasketId = async (basketId = 0, userId) => {
+const deleteBasketsByBasketId = async (basketIds) => {
     await AppDataSource.query(
         `
         DELETE FROM baskets
-        WHERE id = ? AND user_id = ?
+        ?
         `,
-        [basketId, userId]
+        [basketIds]
     );
 };
 
@@ -93,12 +93,25 @@ const getPriceOfBasketByBasketId = async (basketId, userId) => {
     );
 };
 
+const checkIfBasketExists = async (basketId) => {
+    const row = await AppDataSource.query(
+        `SELECT
+            id
+        FROM baskets
+        WHERE id = ?
+        `,
+        [basketId]
+    );
+    return row;
+};
+
 module.exports = {
     addBasket,
     deleteAllBasketsByUserId,
-    deleteBasketByBasketId,
+    deleteBasketsByBasketId,
     getBasketsByUserId,
     updateBasket,
     getBasketByUserIdAndProductId,
     getPriceOfBasketByBasketId,
+    checkIfBasketExists,
 };

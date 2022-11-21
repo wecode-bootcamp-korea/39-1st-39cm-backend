@@ -1,18 +1,27 @@
 const { checkoutService } = require('../services');
+const { CustomError } = require('../utils/error');
 
-const orderItemsByUserId = async (req, res) => {
+const orderItems = async (req, res) => {
     try {
         //const userId = req.user;
         //머지되면 위에걸로 바꾸셈
         const { userId } = req.body;
-        const totalPrice = await checkoutService.orderItemsByUserId(userId);
-        return res.status(200).json({ totalPrice });
+        const { orders } = req.body;
+        if (!Array.isArray(orders) || orders.length === 0) throw new CustomError('BAD_REQUEST', 400);
+        if (
+            orders.some((order) => {
+                return isNaN(order.amount) || order.amount === 0 || isNaN(order.productId);
+            })
+        ) {
+            throw new CustomError('BAD_REQUEST', 400);
+        }
+        await checkoutService.orderItems(userId, orders);
+        return res.status(200).json({ message: 'checkedOut' });
     } catch (err) {
-        console.log(err);
         res.status(err.statusCode || 500).json({ message: err.message });
     }
 };
 
 module.exports = {
-    orderItemsByUserId,
+    orderItems,
 };
