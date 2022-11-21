@@ -6,6 +6,6 @@ const { likeRouter } = require('./likeRouter');
 const router = express.Router();
 
 router.use('/auth', userRouter);
-router.use('/like', likeRouter);
+router.use('/likes', likeRouter);
 
 module.exports = { router };

@@ -1,7 +1,8 @@
 const { likeService } = require('../services');
 
 const createLike = async (req, res) => {
-    const { user_id, product_id } = req.body;
+    const { product_id } = req.body;
+    const user_id = req.user;
 
     await likeService.createLike(user_id, product_id);
 
@@ -10,8 +11,9 @@ const createLike = async (req, res) => {
 
 const deleteLike = async (req, res) => {
     const { productId } = req.params;
+    const user_id = req.user;
 
-    await likeService.deleteLike(productId);
+    await likeService.deleteLike(user_id, productId);
 
     return res.status(204).json({ message: 'DELETELIKE_SUCCESS' });
 };
