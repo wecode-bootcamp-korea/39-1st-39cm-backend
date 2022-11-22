@@ -8,6 +8,6 @@ const router = express.Router();
 
 router.use('/products', productRouter);
 router.use('/auth', userRouter);
-router.use('/review', reviewRouter);
+router.use('/reviews', reviewRouter);
 
 module.exports = { router };
