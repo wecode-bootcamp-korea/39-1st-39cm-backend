@@ -9,7 +9,7 @@ const deleteLike = async (user_id, productId) => {
     const checkLike = await likeDao.getLikeUserId(user_id);
 
     if (!checkLike) {
-        throw new CustomError('NOT_CLICK_LIKE_IT', 400);
+        throw new CustomError('NO_PRODUCT_TO_DISLIKE', 400);
     }
 
     return likeDao.deleteLike(user_id, productId);

@@ -49,7 +49,7 @@ const signIn = async (email, password) => {
         throw new CustomError('WRONG_PASSWORD', 400);
     }
 
-    const token = jwt.sign({ id: user.id }, process.env.secretKey);
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
 
     return token;
 };
