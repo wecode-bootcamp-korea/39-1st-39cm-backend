@@ -11,7 +11,7 @@ const loginRequired = async (req, res, next) => {
         return res.status(error.statusCode).json({ message: error.message });
     }
 
-    const decoded = jwt.verify(token, process.env.secretKey);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const user = await userService.getUserById(decoded.id);
 
