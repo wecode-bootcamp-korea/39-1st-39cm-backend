@@ -22,9 +22,8 @@ const createLike = async (userId, productId) => {
             `,
         [userId, productId]
     );
-    const result = await getLikeUserId(userId, productId);
 
-    return result;
+    return await getLikeUserId(userId, productId);
 };
 
 const deleteLike = async (userId, productId) => {

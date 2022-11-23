@@ -1,6 +1,24 @@
 const { likeService } = require('../services');
 const { CustomError } = require('../utils/error');
 
+const checkLike = async (req, res) => {
+    try {
+        const { productId } = req.params;
+        const userId = req.user;
+        const result = await likeService.checkLike(userId, productId);
+
+        if (result) {
+            return res.status(201).json({ isLiked: true });
+        }
+
+        if (!result) {
+            return res.status(201).json({ isLiked: false });
+        }
+    } catch (err) {
+        return res.status(err.statusCode || 500).json({ message: err.message });
+    }
+};
+
 const createLike = async (req, res) => {
     try {
         const { productId } = req.params;
@@ -10,10 +28,10 @@ const createLike = async (req, res) => {
 
         const result = {
             ...data,
-            is_liked: true,
+            isLiked: true,
         };
 
-        return res.status(201).json({ result: result });
+        return res.status(201).json({ result });
     } catch (err) {
         return res.status(err.statusCode || 500).json({ message: err.message });
     }
@@ -32,13 +50,13 @@ const deleteLike = async (req, res) => {
 
         const result = {
             ...data,
-            is_liked: false,
+            isLiked: false,
         };
 
-        return res.status(200).json({ result: result });
+        return res.status(200).json({ result });
     } catch (err) {
         return res.status(err.statusCode || 500).json({ message: err.message });
     }
 };
 
-module.exports = { createLike, deleteLike };
+module.exports = { createLike, deleteLike, checkLike };
