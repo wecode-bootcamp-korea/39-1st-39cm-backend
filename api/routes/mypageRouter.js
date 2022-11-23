@@ -5,6 +5,7 @@ const { loginRequired } = require('../utils/auth');
 
 const mypageRouter = express.Router();
 
-mypageRouter.get('/user', loginRequired, mypageController.getUserInformation);
+mypageRouter.get('/user/info', loginRequired, mypageController.getUserInformation);
+mypageRouter.get('/user/ordered', loginRequired, mypageController.getUserOrdered);
 
 module.exports = { mypageRouter };
