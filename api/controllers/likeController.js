@@ -3,12 +3,17 @@ const { CustomError } = require('../utils/error');
 
 const createLike = async (req, res) => {
     try {
-        const { product_id } = req.body;
-        const user_id = req.user;
+        const { productId } = req.params;
+        const userId = req.user;
 
-        await likeService.createLike(user_id, product_id);
+        const data = await likeService.createLike(userId, productId);
 
-        return res.status(201).json({ message: 'CREATELIKE_SUCCESS' });
+        const result = {
+            ...data,
+            is_liked: true,
+        };
+
+        return res.status(201).json({ result: result });
     } catch (err) {
         return res.status(err.statusCode || 500).json({ message: err.message });
     }
@@ -17,15 +22,20 @@ const createLike = async (req, res) => {
 const deleteLike = async (req, res) => {
     try {
         const { productId } = req.params;
-        const user_id = req.user;
+        const userId = req.user;
 
         if (isNaN(productId)) {
             throw new CustomError('BAD_REQUEST', 400);
         }
 
-        await likeService.deleteLike(user_id, productId);
+        const data = await likeService.deleteLike(userId, productId);
 
-        return res.status(200).json({ message: 'DELETELIKE_SUCCESS' });
+        const result = {
+            ...data,
+            is_liked: false,
+        };
+
+        return res.status(200).json({ result: result });
     } catch (err) {
         return res.status(err.statusCode || 500).json({ message: err.message });
     }
