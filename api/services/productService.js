@@ -37,7 +37,7 @@ const buildOrderClause = (sort) => {
     if (!sort) {
         return {
             toSqlString: function () {
-                return ` `;
+                return `ORDER BY price DESC  `;
             },
         };
     }
