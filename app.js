@@ -6,7 +6,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const { router } = require('./api/routes');
-const { AppDataSource } = require('./api/models/data_source');
+const { appDataSource } = require('./api/models/data_source');
 
 const app = express();
 
@@ -24,7 +24,7 @@ const PORT = process.env.PORT;
 
 const start = async () => {
     try {
-        await AppDataSource.initialize();
+        await appDataSource.initialize();
 
         server.listen(PORT, () => console.log(`Server is listening on ${PORT}`));
     } catch (err) {

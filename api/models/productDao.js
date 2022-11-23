@@ -1,7 +1,7 @@
-const { AppDataSource } = require('./data_source');
+const { appDataSource } = require('./data_source');
 
 const getProductByProductId = async (productId) => {
-    const row = await AppDataSource.query(
+    const row = await appDataSource.query(
         `SELECT
             p.name productName,
             p.description description,
@@ -46,7 +46,7 @@ const getProductByProductId = async (productId) => {
 };
 
 const getProducts = async (whereClause, orderClause, limitClause) => {
-    const rows = await AppDataSource.query(
+    const rows = await appDataSource.query(
         `SELECT
             p.id productId,
             p.name productName,
@@ -88,4 +88,16 @@ const getProducts = async (whereClause, orderClause, limitClause) => {
     return rows;
 };
 
-module.exports = { getProductByProductId, getProducts };
+const getProductNameByProductId = async (productId) => {
+    const row = await appDataSource.query(
+        `SELECT
+            name productName
+        FROM products
+        WHERE id = ?
+        `,
+        [productId]
+    );
+    return row;
+};
+
+module.exports = { getProductByProductId, getProducts, getProductNameByProductId };
