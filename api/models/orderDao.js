@@ -1,35 +1,58 @@
-const { AppDataSource } = require('./data_source');
+const { appDataSource } = require('./data_source');
 
-const addOrder = async (userId) => {
-    await AppDataSource.query(
-        `INSERT INTO 
-        orders(
-            user_id,
-            order_status_id
-        ) VALUES (?,1);
-        `,
-        [userId]
-    );
-    return await AppDataSource.query(`SELECT LAST_INSERT_ID() as orderId;`);
+const orderItemsTransaction = async (userId, orders, remainingPoint) => {
+    return await appDataSource.transaction(async (transactionalEntityManager) => {
+        await transactionalEntityManager.query(
+            `INSERT INTO 
+            orders(
+                user_id,
+                order_status_id
+            ) VALUES (?,1);
+            `,
+            [userId]
+        );
+
+        const [{ orderId }] = await transactionalEntityManager.query(`SELECT LAST_INSERT_ID() as orderId;`);
+        const items = {
+            toSqlString: function () {
+                return addOrderItemsQueryBuilder(orders, orderId);
+            },
+        };
+
+        await transactionalEntityManager.query(
+            `INSERT INTO
+            order_items(
+                amount,
+                order_id,
+                product_id,
+                order_items_status_id
+            ) VALUES 
+            ?
+            `,
+            [items]
+        );
+
+        await transactionalEntityManager.query(
+            `
+            UPDATE users
+            SET point = ?
+            WHERE id = ?
+            `,
+            [remainingPoint, userId]
+        );
+    });
 };
 
-const addOrderItems = async (items) => {
-    await AppDataSource.query(
-        `INSERT INTO
-        order_items(
-            amount,
-            order_id,
-            product_id,
-            order_items_status_id
-        ) VALUES 
-        ?
-        `,
-        [items]
-    );
+const addOrderItemsQueryBuilder = (orders, orderId) => {
+    const items = [];
+    for (const item of orders) {
+        items.push(`(${item.amount},${orderId},${item.productId},1)`);
+    }
+    return items.join(', ');
 };
 
 const deleteOrderByOrderId = async (orderId) => {
-    await AppDataSource.query(
+    return await appDataSource.query(
         `
         DELETE FROM orders
         WHERE id = ?;
@@ -38,7 +61,7 @@ const deleteOrderByOrderId = async (orderId) => {
     );
 };
 const deleteOrderItemsByOrderId = async (orderId) => {
-    await AppDataSource.query(
+    return await appDataSource.query(
         `
         DELETE FROM order_items
         WHERE order_id = ?;
@@ -46,4 +69,4 @@ const deleteOrderItemsByOrderId = async (orderId) => {
         [orderId]
     );
 };
-module.exports = { addOrder, addOrderItems, deleteOrderByOrderId, deleteOrderItemsByOrderId };
+module.exports = { deleteOrderByOrderId, deleteOrderItemsByOrderId, orderItemsTransaction };

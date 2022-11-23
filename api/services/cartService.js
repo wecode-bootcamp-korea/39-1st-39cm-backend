@@ -6,11 +6,16 @@ const getBasketsByUserId = async (userId) => {
 };
 
 const addOrUpdateBasketByUserId = async (userId, productId, amount) => {
-    if (!(await productDao.checkIfProductExists(productId))[0]) throw new CustomError('PRODUCT_DOES_NOT_EXIST', 404);
-    const [row] = await cartDao.getBasketByUserIdAndProductId(userId, productId);
-    if (!row && amount) await cartDao.addBasket(userId, productId, amount);
-    if (!amount) await cartDao.deleteBasketsByBasketId(row?.basketId, userId);
-    if (row && amount) await cartDao.updateBasket(row.basketId, userId, amount);
+    if (!(await productDao.getProductNameByProductId(productId))[0])
+        throw new CustomError('PRODUCT_DOES_NOT_EXIST', 404);
+    const [basket] = await cartDao.getBasketByUserIdAndProductId(userId, productId);
+    if (!amount) {
+        await cartDao.deleteBasketByProductIdAndUserId(userId, productId);
+    } else if (!basket) {
+        await cartDao.addBasket(userId, productId, amount);
+    } else {
+        await cartDao.updateBasket(basket.basketId, userId, amount);
+    }
     return [await cartDao.getBasketByUserIdAndProductId(userId, productId)];
 };
 
@@ -23,7 +28,7 @@ const deleteBasketsByBasketId = async (userId, basketIds) => {
 };
 
 const checkIfBasketExists = async (basketId, userId) => {
-    if (!(await cartDao.checkIfBasketExists(basketId, userId))[0]) throw new CustomError('BASKET_DOES_NOT_EXIST', 404);
+    if (!(await cartDao.getBasketByBasketId(basketId, userId))[0]) throw new CustomError('BASKET_DOES_NOT_EXIST', 404);
 };
 
 const deleteBasketsQueryBuilder = (basketIds) => {

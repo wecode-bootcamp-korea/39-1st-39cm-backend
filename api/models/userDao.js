@@ -1,7 +1,7 @@
-const { AppDataSource } = require('./data_source');
+const { appDataSource } = require('./data_source');
 
 const getUserByEmail = async (email) => {
-    const result = await AppDataSource.query(
+    const result = await appDataSource.query(
         `SELECT 
            *
 		FROM users
@@ -13,7 +13,7 @@ const getUserByEmail = async (email) => {
 };
 
 const getUserById = async (id) => {
-    const result = await AppDataSource.query(
+    const result = await appDataSource.query(
         `
 		SELECT 
            *
@@ -25,7 +25,7 @@ const getUserById = async (id) => {
 };
 
 const createUser = async (name, email, password, gender, address) => {
-    await AppDataSource.query(
+    await appDataSource.query(
         `INSERT INTO users(
             name,
             email,
@@ -39,7 +39,7 @@ const createUser = async (name, email, password, gender, address) => {
 };
 
 const getPointByUserId = async (userId) => {
-    const point = await AppDataSource.query(
+    const point = await appDataSource.query(
         `SELECT
             point
         FROM users
@@ -51,7 +51,7 @@ const getPointByUserId = async (userId) => {
 };
 
 const updatePointByUserId = async (point, userId) => {
-    await AppDataSource.query(
+    return await appDataSource.query(
         `
         UPDATE users
         SET point = ?

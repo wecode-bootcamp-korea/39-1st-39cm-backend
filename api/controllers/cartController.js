@@ -7,7 +7,9 @@ const getBasketsByUserId = async (req, res) => {
         const baskets = await cartService.getBasketsByUserId(userId);
         return res.status(200).json({ baskets });
     } catch (err) {
-        res.status(err.statusCode || 500).json({ message: err.message });
+        res.status(err.statusCode || 500).json(
+            err.statusCode ? { message: err.message } : { message: 'UNEXPECTED_ERROR' }
+        );
     }
 };
 
@@ -19,7 +21,9 @@ const addOrUpdateBasketByUserId = async (req, res) => {
         const basket = await cartService.addOrUpdateBasketByUserId(userId, productId, amount);
         return res.status(200).json({ updated: basket });
     } catch (err) {
-        res.status(err.statusCode || 500).json({ message: err.message });
+        res.status(err.statusCode || 500).json(
+            err.statusCode ? { message: err.message } : { message: 'UNEXPECTED_ERROR' }
+        );
     }
 };
 
@@ -33,9 +37,11 @@ const deleteBasketsByBasketId = async (req, res) => {
             await cartService.checkIfBasketExists(basketId, userId);
         }
         await cartService.deleteBasketsByBasketId(userId, basketIds);
-        return res.status(200).json({ deleted: basketIds });
+        return res.status(204).end();
     } catch (err) {
-        res.status(err.statusCode || 500).json({ message: err.message });
+        res.status(err.statusCode || 500).json(
+            err.statusCode ? { message: err.message } : { message: 'UNEXPECTED_ERROR' }
+        );
     }
 };
 module.exports = {

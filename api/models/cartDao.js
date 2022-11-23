@@ -1,7 +1,7 @@
-const { AppDataSource } = require('./data_source');
+const { appDataSource } = require('./data_source');
 
 const addBasket = async (userId, productId, amount) => {
-    await AppDataSource.query(
+    return await appDataSource.query(
         `INSERT INTO baskets(
             amount,
             product_id,
@@ -13,7 +13,7 @@ const addBasket = async (userId, productId, amount) => {
 };
 
 const deleteAllBasketsByUserId = async (userId) => {
-    await AppDataSource.query(
+    return await appDataSource.query(
         `
         DELETE FROM baskets
         WHERE user_id = ?;
@@ -23,7 +23,7 @@ const deleteAllBasketsByUserId = async (userId) => {
 };
 
 const deleteBasketsByBasketId = async (basketIds) => {
-    await AppDataSource.query(
+    return await appDataSource.query(
         `
         DELETE FROM baskets
         ?
@@ -32,13 +32,23 @@ const deleteBasketsByBasketId = async (basketIds) => {
     );
 };
 
+const deleteBasketByProductIdAndUserId = async (userId, productId) => {
+    return await appDataSource.query(
+        `
+        DELETE FROM baskets
+        WHERE user_id = ? AND product_id = ?
+        `,
+        [userId, productId]
+    );
+};
+
 const getBasketsByUserId = async (userId) => {
-    const rows = await AppDataSource.query(
+    const rows = await appDataSource.query(
         `
         SELECT
             p.name productName,
             p.id productId,
-            p.price price,
+            p.price productPrice,
             b.amount amount,
             b.id basketId,
             p.brand_name brandName,
@@ -60,7 +70,7 @@ const getBasketsByUserId = async (userId) => {
 };
 
 const getBasketByUserIdAndProductId = async (userId, productId) => {
-    const row = await AppDataSource.query(
+    const row = await appDataSource.query(
         `SELECT
             id basketId, amount
         FROM baskets
@@ -71,7 +81,7 @@ const getBasketByUserIdAndProductId = async (userId, productId) => {
     return row;
 };
 const updateBasket = async (basketId, userId, amount) => {
-    await AppDataSource.query(
+    return await appDataSource.query(
         `
         UPDATE baskets
         SET amount = ?
@@ -82,7 +92,7 @@ const updateBasket = async (basketId, userId, amount) => {
 };
 
 const getPriceOfBasketByBasketId = async (basketId, userId) => {
-    await AppDataSource.query(
+    return await appDataSource.query(
         `SELECT
             (b.amount * p.price) totalPrice
         FROM baskets b
@@ -93,8 +103,8 @@ const getPriceOfBasketByBasketId = async (basketId, userId) => {
     );
 };
 
-const checkIfBasketExists = async (basketId, userId) => {
-    const row = await AppDataSource.query(
+const getBasketByBasketId = async (basketId, userId) => {
+    const row = await appDataSource.query(
         `SELECT
             id
         FROM baskets
@@ -113,5 +123,6 @@ module.exports = {
     updateBasket,
     getBasketByUserIdAndProductId,
     getPriceOfBasketByBasketId,
-    checkIfBasketExists,
+    getBasketByBasketId,
+    deleteBasketByProductIdAndUserId,
 };

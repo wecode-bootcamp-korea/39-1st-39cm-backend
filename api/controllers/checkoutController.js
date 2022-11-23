@@ -16,7 +16,9 @@ const orderItems = async (req, res) => {
         await checkoutService.orderItems(userId, orders);
         return res.status(200).json({ message: 'checkedOut' });
     } catch (err) {
-        res.status(err.statusCode || 500).json({ message: err.message });
+        res.status(err.statusCode || 500).json(
+            err.statusCode ? { message: err.message } : { message: 'UNEXPECTED_ERROR' }
+        );
     }
 };
 
