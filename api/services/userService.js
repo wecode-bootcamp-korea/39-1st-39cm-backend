@@ -54,8 +54,18 @@ const signIn = async (email, password) => {
     return token;
 };
 
+const getUserInformation = async (userId) => {
+    return await userDao.getUserInformation(userId);
+};
+
+const getUserOrdered = async (userId) => {
+    return await userDao.getUserOrdered(userId);
+};
+
 module.exports = {
     signUp,
     signIn,
     getUserById,
+    getUserInformation,
+    getUserOrdered,
 };
