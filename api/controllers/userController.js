@@ -24,7 +24,7 @@ const signUp = async (req, res) => {
 
 const signIn = async (req, res) => {
     const { email, password } = req.body;
-
+    console.log(email);
     try {
         const token = await userService.signIn(email, password);
         res.status(200).json({ token: token });

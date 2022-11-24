@@ -6,6 +6,7 @@ const getUserInformation = async (userId) => {
         users.id,
         users.name,
         users.point,
+        users.address,
         (SELECT
             JSON_ARRAYAGG(
                 JSON_OBJECT(
@@ -16,19 +17,21 @@ const getUserInformation = async (userId) => {
                 "reviewImage",r.image_url))
                 from reviews r 
                 inner join products on r.product_id = products.id
+                where r.user_id = ?
         ) reviewed,
         (SELECT
         JSON_ARRAYAGG(likes.product_id)
         from likes where likes.user_id = ?
         ) liked
         
-        from reviews
-        inner join products on reviews.product_id = products.id
-        inner join product_images on products.id = product_images.product_id
-        inner join users on reviews.user_id = users.id
-        inner join likes on likes.user_id = reviews.user_id
+        from users
+        left join reviews on reviews.user_id = users.id
+        left join products on reviews.product_id = products.id
+        left join product_images on products.id = product_images.product_id
+        left join likes on likes.user_id = reviews.user_id
+        where users.id =?
         group by users.id`,
-        [userId]
+        [userId, userId, userId]
     );
     return row;
 };
