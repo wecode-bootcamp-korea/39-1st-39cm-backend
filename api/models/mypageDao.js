@@ -6,6 +6,7 @@ const getUserInformation = async (userId) => {
         users.id,
         users.name,
         users.point,
+        users.address,
         (SELECT
             JSON_ARRAYAGG(
                 JSON_OBJECT(
