@@ -15,6 +15,11 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(router);
 
+app.use((err, req, res, next) => {
+    err.statusCode = err.statusCode || 500;
+    res.status(err.statusCode).json({ message: err.message });
+});
+
 app.get('/ping', (req, res) => {
     return res.status(200).json({ message: 'pong' });
 });
