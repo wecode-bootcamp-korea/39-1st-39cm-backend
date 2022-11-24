@@ -31,7 +31,27 @@ const signIn = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
+
+const getUserInformation = async (req, res) => {
+    try {
+        const userId = req.user;
+        const userInfo = await userService.getUserInformation(userId);
+        return res.status(200).json({ userInfo });
+    } catch (err) {
+        res.status(err.statusCode || 500).json({ message: err.message });
+    }
+};
+
+const getUserOrdered = async (req, res) => {
+    const userId = req.user;
+    const userOrdered = await userService.getUserOrdered(userId);
+
+    return res.status(200).json({ userOrdered });
+};
+
 module.exports = {
     signUp,
     signIn,
+    getUserInformation,
+    getUserOrdered,
 };
