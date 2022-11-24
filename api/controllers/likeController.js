@@ -7,13 +7,9 @@ const checkLike = async (req, res) => {
         const userId = req.user;
         const result = await likeService.checkLike(userId, productId);
 
-        if (result) {
-            return res.status(201).json({ isLiked: true });
-        }
+        if (!result) return res.status(200).json({ isLiked: false });
 
-        if (!result) {
-            return res.status(201).json({ isLiked: false });
-        }
+        return res.status(200).json({ isLiked: true });
     } catch (err) {
         return res.status(err.statusCode || 500).json({ message: err.message });
     }
