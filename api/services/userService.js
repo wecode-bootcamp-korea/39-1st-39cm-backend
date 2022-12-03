@@ -1,4 +1,5 @@
 const { userDao } = require('../models');
+const { CustomError } = require('../utils/error');
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -13,24 +14,18 @@ const signUp = async (name, email, password, gender, address) => {
     );
 
     if (!emailValidation.test(email)) {
-        const err = new Error('EMAIL_IS_NOT_VALID');
-        err.statusCode = 409;
-        throw err;
+        throw new CustomError('EMAIL_IS_NOT_VALID', 400);
     }
 
     const pwValidation = new RegExp('^(?=.*[a-z])(?=.*[0-9])(?=.{8,20})');
     if (!pwValidation.test(password)) {
-        const err = new Error('PASSWORD_IS_NOT_VALID');
-        err.statusCode = 409;
-        throw err;
+        throw new CustomError('PASSWORD_IS_NOT_VALID', 409);
     }
 
     const user = await userDao.getUserByEmail(email);
 
     if (user) {
-        const err = new Error('DUPLICATE_EMAIL');
-        err.statusCode = 400;
-        throw err;
+        throw new CustomError('DUPLICATE_EMAIL', 400);
     }
 
     const Gender = Object.freeze({
@@ -51,9 +46,7 @@ const signIn = async (email, password) => {
     const match = await bcrypt.compare(password, user.password);
 
     if (!match) {
-        const error = new Error('WRONG_PASSWORD');
-        error.statusCode = 401;
-        throw error;
+        throw new CustomError('WRONG_PASSWORD', 400);
     }
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
@@ -61,8 +54,18 @@ const signIn = async (email, password) => {
     return token;
 };
 
+const getUserInformation = async (userId) => {
+    return await userDao.getUserInformation(userId);
+};
+
+const getUserOrdered = async (userId) => {
+    return await userDao.getUserOrdered(userId);
+};
+
 module.exports = {
     signUp,
     signIn,
     getUserById,
+    getUserInformation,
+    getUserOrdered,
 };
